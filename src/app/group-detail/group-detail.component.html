@@ -1,0 +1,36 @@
+<div class="container">
+
+  <div class="info-block alert alert-danger" *ngIf="mainData.error.length > 0">
+    <strong>Ошибка: </strong> <span>{{ mainData.error }}</span>
+  </div>
+
+  <div class="info-block main-loading text-center" *ngIf="mainData.isLoading">
+    <h3>Загрузка...</h3>
+    <h3><i class="fa fa-spinner fa-spin"></i></h3>
+  </div>
+  <div class="tab-content-data" *ngIf="!mainData.isLoading">
+    <div class="alert alert-danger" *ngIf="groupInfo.error.length > 0">
+      <span>{{ groupInfo.error }}</span>
+    </div>
+
+    <div class="info-block main-group-info" *ngIf="groupInfo.content !== null">
+      <p class="group-title">{{ groupInfo.content.name }}</p>
+    </div>
+
+    <div class="info-block main-group-info" *ngIf="groupInfo.content !== null">
+      <p class="group-title">{{ groupInfo.content.name }}</p>
+    </div>
+    <ngb-tabset [justify]="currentJustify" (tabChange)="beforeChange($event)">
+      <ngb-tab id="periods" title="Периоды">
+        <ng-template ngbTabContent>
+
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab id="users" title="Пользователи">
+        <ng-template ngbTabContent>
+          Test 2
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>

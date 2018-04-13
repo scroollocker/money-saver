@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import {AuthComponent} from './auth/auth.component';
 import {GroupsComponent} from './groups/groups.component';
 import {AuthGuard} from './auth.guard';
+import {GroupDetailComponent} from './group-detail/group-detail.component';
 
 const route: Routes = [
   { path: 'login', component: AuthComponent },
@@ -14,7 +15,8 @@ const route: Routes = [
         path: '',
         canActivateChild: [AuthGuard],
         children: [
-          { path: '', component: GroupsComponent }
+          { path: '', component: GroupsComponent },
+          { path: ':groupId', component: GroupDetailComponent }
         ]
       }
     ]

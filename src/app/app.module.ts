@@ -13,6 +13,7 @@ import { GroupsComponent } from './groups/groups.component';
 import { GroupService } from './group.service';
 import {FormsModule} from '@angular/forms';
 import {AuthGuard} from './auth.guard';
+import { GroupDetailComponent } from './group-detail/group-detail.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import {AuthGuard} from './auth.guard';
     AppComponent,
     AuthComponent,
     NavigationComponent,
-    GroupsComponent
+    GroupsComponent,
+    GroupDetailComponent
   ],
   imports: [
     BrowserModule,

@@ -17,6 +17,15 @@ export class GroupService {
 
   }
 
+  getGroupById(id: number, user_id: number) {
+
+    const url = environment.apiUrl + 'groups/byId/' + id + '/' + user_id + '/?token=' + this.authService.token;
+
+    return this.http.get(url);
+
+  }
+
+
   createGroup(name: string, user_id: number) {
     const url = environment.apiUrl + 'groups/create' + '/?token=' + this.authService.token;
 
