@@ -1,0 +1,8 @@
+#group-content-table {
+  margin-top: 15px;
+}
+
+#group-content-table tbody > tr:hover {
+  background-color: #F5F5F5;
+  cursor: pointer;
+}

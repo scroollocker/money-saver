@@ -1,0 +1,65 @@
+<div class="container">
+  <div>
+  <h3>Список доступных групп</h3>
+    <button (click)="openModal(content)" class="btn btn-outline-primary"><i class="fa fa-plus"></i> Добавить</button>
+  </div>
+
+  <div class="form-group text-center" *ngIf="isLoading">
+    <h2>Загрузка...</h2>
+    <p><i class="fa fa-spinner fa-spin"></i></p>
+  </div>
+
+  <div class="form-group text-center" *ngIf="getGroups().length === 0 && !isLoading">
+    <h2>Нет доступных групп</h2>
+    <p><i class="fa fa-flag"></i></p>
+  </div>
+
+  <div class="form-group" *ngIf="getGroups().length > 0 && !isLoading">
+    <table id="group-content-table" class="table table-bordered">
+      <thead>
+        <tr>
+          <td><i class="fa fa-hashtag"></i> ID</td>
+          <td><i class="fa fa-group"></i> Название</td>
+          <td><i class="fa fa-play"></i> Действия</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let group of getGroups()" (dblclick)="openGroup(group)">
+          <td>{{ group.group_id }}</td>
+          <td>{{ group.name }}</td>
+          <td>
+            <div class="btn-group">
+              <button (click)="removeGroup(group)" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i></button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<ng-template #content let-close="close" let-dismiss="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Добавление группы</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal(dismiss)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #groupAdd="ngForm" class="form" novalidate>
+      <div class="form-group">
+        <label>Название:</label>
+        <input [(ngModel)]="editGroup.name" class="form-control" type="text" maxlength="50" required name="group_name">
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="groupAdd.invalid || btnLoading" (click)="save(close)" type="button" class="btn btn-outline-primary">
+      <span *ngIf="!btnLoading"><i class="fa fa-save"></i> Сохранить</span>
+      <span *ngIf="btnLoading"><i class="fa fa-spin fa-spinner"></i> Загрузка....</span>
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="closeModal(close)">Отменить</button>
+  </div>
+</ng-template>
+
