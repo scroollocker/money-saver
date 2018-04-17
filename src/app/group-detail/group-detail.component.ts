@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {of} from 'rxjs/observable/of';
-import {NgbTabChangeEvent} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDateStruct, NgbModal, NgbTabChangeEvent} from '@ng-bootstrap/ng-bootstrap';
 import {Group} from '../models/Group';
 import {GroupService} from '../group.service';
 import {AuthService} from '../auth.service';
+import {environment} from '../../environments/environment';
+import {PeriodsService} from '../periods.service';
+import {Period} from '../models/Period';
 
 @Component({
   selector: 'app-group-detail',
@@ -15,6 +18,11 @@ export class GroupDetailComponent implements OnInit {
 
   group_id = 0;
   currentJustify = 'fill';
+
+  date_start_model = null;
+  date_end_model = null;
+
+  editPeriod: Period;
 
   mainData = {
     error: '',
@@ -40,20 +48,55 @@ export class GroupDetailComponent implements OnInit {
     content: []
   };
 
+  empty(content: any) {
+    if (content === null || content === undefined) {
+      return true;
+    }
+    if (Array.isArray(content) && content.length <= 0) {
+      return true;
+    }
+    if (content.length === 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  addNewPeriod(content) {
+    let period = new Period();
+
+    this.openModal(content, period);
+  }
+
+  openModal(content, period) {
+
+    console.log(period);
+    this.editPeriod = period;
+    this.modalService.open(content);
+  }
+
+  closeModal(close) {
+    close();
+  }
+
   constructor(private activeRoute: ActivatedRoute,
               private groupService: GroupService,
               private authService: AuthService,
-              private router: Router) { }
+              private periodService: PeriodsService,
+              private router: Router,
+              private modalService: NgbModal) { }
 
   loadGroupInfo() {
-    this.groupInfo.error = '';
-    this.groupInfo.isLoading = true;
+
 
     const currentUser = this.authService.currentUser;
 
     if (currentUser) {
+      this.groupInfo.error = '';
+      this.groupInfo.isLoading = true;
       this.groupService.getGroupById(this.group_id, currentUser.user_id).subscribe(
         (result:any) => {
+          this.groupInfo.isLoading = false;
           if (result.status) {
             this.groupInfo.content = result.group;
           }
@@ -62,6 +105,7 @@ export class GroupDetailComponent implements OnInit {
           }
         },
         (error) => {
+          this.groupInfo.isLoading = false;
           if (error.status == 401) {
             this.router.navigateByUrl('/login');
           }
@@ -78,8 +122,38 @@ export class GroupDetailComponent implements OnInit {
   }
 
   loadPeriods() {
-    this.periods.error = '';
-    this.periods.isLoading = true;
+
+    const currentUser = this.authService.currentUser;
+
+    if (currentUser) {
+      this.periods.error = '';
+      this.periods.isLoading = true;
+
+
+      this.periodService.getPeriods(this.group_id, currentUser.user_id).subscribe(
+        (result: any) => {
+          this.periods.isLoading = false;
+          if (result.status) {
+            this.periods.content = result.periods;
+          }
+          else {
+            this.periods.error = result.message;
+          }
+        },
+        (error) => {
+          if (error.status == 401) {
+            this.router.navigateByUrl('/login');
+          }
+          else {
+            this.periods.error = 'Произошла системная ошибка...';
+          }
+        }
+      )
+
+    }
+
+
+
 
     // this.periods.content;
   }
@@ -124,6 +198,9 @@ export class GroupDetailComponent implements OnInit {
       }
 
       this.mainData.isLoading = false;
+
+
+      this.loadPeriodGroup();
   //  });
   }
 

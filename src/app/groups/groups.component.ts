@@ -101,10 +101,12 @@ export class GroupsComponent implements OnInit {
 
   }
 
-  removeGroup(group: Group) {
+  removeGroup(event, group: Group) {
+
+    event.stopPropagation();
 
     if (!confirm("Вы действительно хотите удалить запись?")) {
-      return;
+      return false;
     }
 
     const currentUser = this.authService.currentUser;
@@ -129,11 +131,15 @@ export class GroupsComponent implements OnInit {
         }
       )
     }
+    return false;
   }
 
-  openGroup(group: Group) {
+  openGroup(event, group: Group) {
     console.log(group);
-    // this.route.
+    event.stopPropagation();
+
+    this.route.navigateByUrl('groups/' + group.group_id);
+
   }
 
   constructor(private groupService: GroupService,

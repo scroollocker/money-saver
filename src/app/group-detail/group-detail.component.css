@@ -16,3 +16,12 @@
 .main-group-info > .alert {
   margin: 0px;
 }
+
+.group-title {
+  color: #000;
+  cursor: pointer;
+}
+
+.group-title:hover, .group-title:focus {
+  text-decoration: none;
+}

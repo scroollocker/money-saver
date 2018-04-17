@@ -14,23 +14,108 @@
     </div>
 
     <div class="info-block main-group-info" *ngIf="groupInfo.content !== null">
-      <p class="group-title">{{ groupInfo.content.name }}</p>
+      <a routerLink="/groups" class="group-title"><i class="fa fa-chevron-left"></i> {{ groupInfo.content.name }}</a>
     </div>
 
-    <div class="info-block main-group-info" *ngIf="groupInfo.content !== null">
-      <p class="group-title">{{ groupInfo.content.name }}</p>
+    <div class="info-block main-group-info" *ngIf="groupInfo.isLoading">
+      <p class="group-loading"><i class="fa fa-spin fa-spinner"></i> Загрузка...</p>
     </div>
     <ngb-tabset [justify]="currentJustify" (tabChange)="beforeChange($event)">
       <ngb-tab id="periods" title="Периоды">
         <ng-template ngbTabContent>
 
+          <div class="form-group info-block">
+            <button (click)="addNewPeriod(modalAddPeriod)" class="btn btn-outline-primary"><i class="fa fa-plus"></i> Добавить</button>
+          </div>
+
+          <div class="alert alert-danger info-block" *ngIf="periods.error.length > 0">
+            {{ periods.error }}
+          </div>
+          <div class="text-center info-block" *ngIf="periods.isLoading">
+            <h3>Загрузка...</h3>
+            <h3><i class="fa fa-spinner fa-spin"></i></h3>
+          </div>
+          <div class="text-center info-block" *ngIf="empty(periods.content)">
+            <h3>Периоды не найдены</h3>
+            <h3><i class="fa fa-flag"></i></h3>
+          </div>
+          <div *ngIf="!empty(periods.content)">
+
+            <div class="form-group info-block">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Начало</th>
+                    <th>Конец</th>
+                    <th>Сумма</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let period of periods.content">
+                    <td>
+                      {{ period.period_id }}
+                    </td>
+                    <td>
+                      {{ period.date_start | amDateFormat: 'DD.MM.YYYY' }}
+                    </td>
+                    <td>
+                      {{ period.date_end | amDateFormat: 'DD.MM.YYYY' }}
+                    </td>
+                    <td>
+                      {{ period.sum }}
+                    </td>
+                    <td>
+                      <div class="btn-group">
+                        <button class="btn btn-danger" title="Удалить"><i class="fa fa-remove"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </ng-template>
       </ngb-tab>
       <ngb-tab id="users" title="Пользователи">
         <ng-template ngbTabContent>
-          Test 2
+
         </ng-template>
       </ngb-tab>
     </ngb-tabset>
   </div>
 </div>
+
+<ng-template #modalAddPeriod let-close="close" let-dismiss="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Изменение периода</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal(dismiss)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label>Дата начала:</label>
+      <div class="input-group">
+        <input (focus)="dp_1.toggle()" class="form-control" ngbDatepicker #dp_1="ngbDatepicker" [(ngModel)]="editPeriod.date_start" placeholder="dd.mm.yyyy">
+        <div class="input-group-append">
+          <button (click)="dp_1.toggle()" class="btn btn-outline-secondary"><i class="fa fa-calendar"></i></button>
+        </div>
+      </div>
+      <label>Дата окончания:</label>
+      <div class="input-group">
+        <input (focus)="dp_2.toggle()" class="form-control" ngbDatepicker #dp_2="ngbDatepicker" [(ngModel)]="editPeriod.date_end" placeholder="dd.mm.yyyy">
+        <div class="input-group-append">
+          <button (click)="dp_2.toggle()" class="btn btn-outline-secondary"><i class="fa fa-calendar"></i></button>
+        </div>
+      </div>
+      <label>Сумма:</label>
+      <input type="number" class="form-control">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Сохранить</button>
+    <button type="button" class="btn btn-outline-dark" (click)="closeModal(close)">Отменить</button>
+  </div>
+</ng-template>

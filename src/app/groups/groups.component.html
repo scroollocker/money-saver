@@ -24,12 +24,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let group of getGroups()" (dblclick)="openGroup(group)">
+        <tr *ngFor="let group of getGroups()" (click)="openGroup($event, group)">
           <td>{{ group.group_id }}</td>
           <td>{{ group.name }}</td>
           <td>
             <div class="btn-group">
-              <button (click)="removeGroup(group)" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i></button>
+              <button (click)="removeGroup($event, group)" class="btn btn-sm btn-danger" title="Удалить"><i class="fa fa-remove"></i></button>
             </div>
           </td>
         </tr>
